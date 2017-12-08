@@ -5,6 +5,12 @@
  * Date: 2017-12-07T15:34
  */
 
+namespace MrGenis\Sat;
+/**
+ * Class CadenaOriginal33
+ *
+ * @package MrGenis\Sat
+ */
 class CadenaOriginal33
 {
 
@@ -54,7 +60,7 @@ class CadenaOriginal33
             $xslt = new \XSLTProcessor();
             $xslt->importStylesheet($dom);
             return $xslt;
-        })();
+        })(static::cadenaoriginal_path('cadenaoriginal_3_3.xslt'));
 
 
         return $xslt->transformToXml($dom_xml);
