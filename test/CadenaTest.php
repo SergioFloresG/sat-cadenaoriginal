@@ -13,7 +13,7 @@ class CadenaTest extends \PHPUnit_Framework_TestCase
 
     public function testCadenaString()
     {
-        $xml = file_get_contents('./__barron_xml.xml');
+        $xml = file_get_contents(realpath(__DIR__) . '/__barron_xml.xml');
         $cadena = CadenaOriginal33::cadenaOriginal($xml);
 
         $this->assertNotNull($cadena, "(Xml String) La respuesta es null");
@@ -25,7 +25,7 @@ class CadenaTest extends \PHPUnit_Framework_TestCase
     public function testCadenaDom()
     {
         $dom = new \DOMDocument();
-        $dom->load('./__barron_xml.xml');
+        $dom->load(realpath(__DIR__) . '/__barron_xml.xml');
 
         $cadena = CadenaOriginal33::cadenaOriginal($dom);
 
@@ -37,7 +37,7 @@ class CadenaTest extends \PHPUnit_Framework_TestCase
 
     public function testCadenaSimpleXml()
     {
-        $dom = simplexml_load_file('./__barron_xml.xml');
+        $dom = simplexml_load_file(realpath(__DIR__) . '/__barron_xml.xml');
 
         $cadena = CadenaOriginal33::cadenaOriginal($dom);
 
