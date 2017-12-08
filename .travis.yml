@@ -7,4 +7,4 @@ before_script:
   - composer install
 
 script:
-  - phpunit -configuration test/phpunit.xml
+  - vendor\phpunit\phpunit -configuration test/phpunit.xml
