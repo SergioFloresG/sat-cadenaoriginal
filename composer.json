@@ -1,0 +1,26 @@
+{
+  "name": "mrgenis/sat-cadenaoriginal",
+  "description": "Generar la cadena original de un CFDI v3.3",
+  "keywords" : ["xml","SAT", "3.3", "SAT 3.3", "cadena", "original"],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sergio Flores Genis",
+      "email": "sf.cancun@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.0",
+    "ext-xmlwriter": "*",
+    "ext-xmlreader": "*",
+    "ext-dom": "*",
+    "lib-libxml": ">=2.6.20"
+  },
+  "autoload": {
+    "psr-4": {
+      "MrGenis\\Sat\\": "src"
+    }
+  }
+}
