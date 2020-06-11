@@ -45,23 +45,7 @@ class CadenaOriginal33
         if (!file_exists($xslt)) static::download();
 
         /** @var \XSLTProcessor $xslt */
-        $xslt = (function ($file_xslt) {
-            static $xslt = null;
-            if (!is_null($xslt)) return $xslt;
-
-            $xslt_str = file_get_contents($file_xslt);
-            $dom = new \DOMDocument('1.0', 'UTF-8');
-            $dom->loadXML($xslt_str);
-            $dom->documentURI = $file_xslt;
-            $dom->resolveExternals = true;
-            $dom->preserveWhiteSpace = true;
-            //$xslt_xml = simplexml_load_string($xslt_str);
-
-            $xslt = new \XSLTProcessor();
-            $xslt->importStylesheet($dom);
-            return $xslt;
-        })(static::cadenaoriginal_path('cadenaoriginal_3_3.xslt'));
-
+        $xslt = static::xlst(static::cadenaoriginal_path('cadenaoriginal_3_3.xslt'));
 
         return $xslt->transformToXml($dom_xml);
     }
@@ -72,6 +56,27 @@ class CadenaOriginal33
     public static function default_xslt_directory($directory)
     {
         static::$default_xslt_directory = $directory;
+    }
+
+    /**
+     * @param strnig $file_xslt
+     * @return \XSLTProcessor
+     */
+    private static function xlst($file_xslt){
+        static $xslt = null;
+        if (!is_null($xslt)) return $xslt;
+
+        $xslt_str = file_get_contents($file_xslt);
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $dom->loadXML($xslt_str);
+        $dom->documentURI = $file_xslt;
+        $dom->resolveExternals = true;
+        $dom->preserveWhiteSpace = true;
+        //$xslt_xml = simplexml_load_string($xslt_str);
+
+        $xslt = new \XSLTProcessor();
+        $xslt->importStylesheet($dom);
+        return $xslt;
     }
 
     /**
