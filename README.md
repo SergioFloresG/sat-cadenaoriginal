@@ -14,8 +14,20 @@ composer require mrgenis/sat-cadenaoriginal
 
 ## Usar
 
+
+Se envia la cadena de texto del CFDI XML 3.3 y 4.0
+
+````php
+// Versión de CFDI 3.3
+MrGenis\Sat\CadenaOriginal33::default_xslt_directory('/absolute-directory/to-store-xslt-files');
+MrGenis\Sat\CadenaOriginal33::cadenaOriginal($xml);
+
+// Versión de CFDI 4.0
+MrGenis\Sat\CadenaOriginal40::default_xslt_directory('/absolute-directory/to-store-xslt-files');
+MrGenis\Sat\CadenaOriginal40::cadenaOriginal($xml);
+````
+
 ### Xml como texto
-Se envia la cadena de texto del CFDI XML 3.3
 
 ```php
 $xml = <<< EOF
@@ -59,6 +71,16 @@ $dom = simplexml_load_file('documento.xml');
 use MrGenis\Sat\CadenaOriginal33;
 $cadena = CadenaOriginal33::cadenaOriginal($dom);
 ```
+
+# Test
+
+```shell
+docker run --rm -it \
+  -v "$PWD":/usr/src/app \
+  thecodingmachine/php:7.4-v4-cli bash -c \
+  "composer install && ./vendor/bin/phpunit --configuration test/phpunit.xml"
+```
+
 
 # Licencia
 
