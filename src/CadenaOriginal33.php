@@ -6,6 +6,10 @@
  */
 
 namespace MrGenis\Sat;
+use DOMDocument;
+use SimpleXMLElement;
+use XSLTProcessor;
+
 /**
  * Class CadenaOriginal33
  *
@@ -14,38 +18,29 @@ namespace MrGenis\Sat;
 class CadenaOriginal33
 {
 
-    private static $XSLT_CADENAORIGINAL = 'http://www.sat.gob.mx/sitio_internet/cfd/3/cadenaoriginal_3_3/cadenaoriginal_3_3.xslt';
+    const XSLT_CADENAORIGINAL = 'http://www.sat.gob.mx/sitio_internet/cfd/3/cadenaoriginal_3_3/cadenaoriginal_3_3.xslt';
 
     /** @var string */
     private static $default_xslt_directory = null;
 
     /**
-     * @param string|\SimpleXMLElement|\DOMDocument $xml
+     * @param string|SimpleXMLElement|DOMDocument $xml
      *
      * @return string
      */
     public static function cadenaOriginal($xml)
     {
-
-        $dom_xml = new \DOMDocument();
-        if ($xml instanceof \DOMDocument) {
-            $dom_xml = $xml;
-        }
-        else if ($xml instanceof \SimpleXMLElement) {
-            $dom_xml->loadXML($xml->asXML());
-        }
-        else if (file_exists($xml)) {
-            $dom_xml->load($xml);
-        }
-        else {
-            $dom_xml->loadXML($xml);
-        }
+        $dom_xml = Tools::buildDomDocumentXml($xml);
 
         $xslt = static::cadenaoriginal_path('cadenaoriginal_3_3.xslt');
-        if (!file_exists($xslt)) static::download();
+        if (!file_exists($xslt)) {
+            Tools::downloadXslt(
+                CadenaOriginal33::XSLT_CADENAORIGINAL,
+                static::cadenaoriginal_path()
+            );
+        }
 
-        /** @var \XSLTProcessor $xslt */
-        $xslt = static::xlst(static::cadenaoriginal_path('cadenaoriginal_3_3.xslt'));
+        $xslt = static::xslt(static::cadenaoriginal_path('cadenaoriginal_3_3.xslt'));
 
         return $xslt->transformToXml($dom_xml);
     }
@@ -59,24 +54,16 @@ class CadenaOriginal33
     }
 
     /**
-     * @param strnig $file_xslt
-     * @return \XSLTProcessor
+     * @param string $file_xslt
+     * @return XSLTProcessor
      */
-    private static function xlst($file_xslt){
+    private static function xslt($file_xslt){
         static $xslt = null;
-        if (!is_null($xslt)) return $xslt;
+        if (!is_null($xslt)) {
+            return $xslt;
+        }
 
-        $xslt_str = file_get_contents($file_xslt);
-        $dom = new \DOMDocument('1.0', 'UTF-8');
-        $dom->loadXML($xslt_str);
-        $dom->documentURI = $file_xslt;
-        $dom->resolveExternals = true;
-        $dom->preserveWhiteSpace = true;
-        //$xslt_xml = simplexml_load_string($xslt_str);
-
-        $xslt = new \XSLTProcessor();
-        $xslt->importStylesheet($dom);
-        return $xslt;
+        return $xslt = Tools::buildXsltProcessor($file_xslt);
     }
 
     /**
@@ -91,29 +78,12 @@ class CadenaOriginal33
         }
         else {
             $directory = realpath(__DIR__) . DIRECTORY_SEPARATOR . 'xslt33';
-            if (!file_exists($directory)) mkdir($directory, 0775, true);
+            if (!file_exists($directory)) {
+                mkdir($directory, 0775, true);
+            }
         }
 
         return $directory . ($file ? '/' . $file : '');
     }
 
-    private static function download()
-    {
-        $filename = basename(static::$XSLT_CADENAORIGINAL);
-        $xslt_str = file_get_contents(static::$XSLT_CADENAORIGINAL);
-        $xslt_str = str_replace("version=\"2.0\"", "version=\"1.0\"", $xslt_str);
-
-        if (preg_match_all("/href=\"(.+)\"/i", $xslt_str, $matches, PREG_PATTERN_ORDER)) {
-            foreach ($matches[1] as $link) {
-                $bname = basename($link);
-                $content = file_get_contents($link);
-                $content = str_replace("version=\"2.0\"", "version=\"1.0\"", $content);
-                file_put_contents(static::cadenaoriginal_path($bname), $content);
-
-                $xslt_str = str_replace($link, './' . $bname, $xslt_str);
-            }
-        }
-
-        file_put_contents(static::cadenaoriginal_path($filename), $xslt_str);
-    }
 }
